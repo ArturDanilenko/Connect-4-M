@@ -81,9 +81,16 @@ class Lobby extends Component{
         }
     }
 
+    updateJoinPanelHeight = ()=>{
+        const create = document.getElementById('createPanelID');
+        document.getElementById('joinPanelID').style.height=create.clientHeight+'px';
+
+    }
+
     componentDidMount(){
         this._isMounted = true;
         removeRoomFromUser();
+        this.updateJoinPanelHeight();
         io.on('updateRooms', ({rooms})=>{
             outputRooms(rooms);
         })
@@ -115,40 +122,42 @@ class Lobby extends Component{
         return (
             <div>
                 {this.renderRedirect()}
-                <div className="createPanel"> 
-                    <Form onSubmit={this.createRoom}>
-                        <FormGroup>
-                            <Label for="exampleName">Room Name</Label>
-                            <Input type="text" name="name" id="exampleName" minLength="5" maxLength="14" value={this.state.roomName} onChange={this.handleRoomNameChange} />
-                            <small className="form-text text-muted">Must be between 5 and 14 characters</small>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="columnNum">Number of Columns</Label>
-                            <Input type="number" name="columns" id="columnNum" value={this.state.colNum} onChange={this.handleColNumChange} min="7" max="20"/>
-                            <small className="form-text text-muted">Enter a number between 7 and 20</small>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="rowNum">Number of Rows</Label>
-                            <Input type="number" name="rows" id="rowNum" value={this.state.rowNum} onChange={this.handleRowNumChange} min="6" max="20"/>
-                            <small className="form-text text-muted">Enter a number between 6 and 20</small>
-                        </FormGroup>
-                        <Button>Create Room</Button>
-                    </Form>
-                </div>
+                <div className="panels">
+                    <div className="createPanel" id="createPanelID"> 
+                        <Form onSubmit={this.createRoom}>
+                            <FormGroup>
+                                <Label for="exampleName">Room Name</Label>
+                                <Input type="text" name="name" id="exampleName" minLength="5" maxLength="14" value={this.state.roomName} onChange={this.handleRoomNameChange} />
+                                <small className="form-text text-muted">Must be between 5 and 14 characters</small>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="columnNum">Number of Columns</Label>
+                                <Input type="number" name="columns" id="columnNum" value={this.state.colNum} onChange={this.handleColNumChange} min="7" max="20"/>
+                                <small className="form-text text-muted">Enter a number between 7 and 20</small>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="rowNum">Number of Rows</Label>
+                                <Input type="number" name="rows" id="rowNum" value={this.state.rowNum} onChange={this.handleRowNumChange} min="6" max="20"/>
+                                <small className="form-text text-muted">Enter a number between 6 and 20</small>
+                            </FormGroup>
+                            <Button>Create Room</Button>
+                        </Form>
+                    </div>
 
-                <div className="joinPanel"> 
-                    <h4>List of open rooms: </h4><hr/>
-                    <ul id="rooms">
-                    </ul>
-                    <Button onClick={this.handleRefresh}>Refresh</Button><hr/>
-                    <Form onSubmit={this.joinRoom}>
-                        <FormGroup>
-                            <Label for="room">Room Name</Label>
-                            <Input type="text" name="room" id="roomJoin" minLength="5" maxLength="14" value={this.state.joinRoomName} onChange={this.handleJoinRoomNameChange}/>
-                            <small className="form-text text-muted">Enter the name of the room as it appears on the list.</small>
-                        </FormGroup>
-                        <Button>Join Room</Button>
-                    </Form>
+                    <div className="joinPanel" id="joinPanelID"> 
+                        <h4>List of open rooms: </h4><hr/>
+                        <ul id="rooms">
+                        </ul>
+                        <Button onClick={this.handleRefresh}>Refresh</Button><hr/>
+                        <Form onSubmit={this.joinRoom}>
+                            <FormGroup>
+                                <Label for="room">Room Name</Label>
+                                <Input type="text" name="room" id="roomJoin" minLength="5" maxLength="14" value={this.state.joinRoomName} onChange={this.handleJoinRoomNameChange}/>
+                                <small className="form-text text-muted">Enter the name of the room as it appears on the list.</small>
+                            </FormGroup>
+                            <Button>Join Room</Button>
+                        </Form>
+                    </div>
                 </div>
                 <ChatComponent/>
             </div>

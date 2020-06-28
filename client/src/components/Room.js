@@ -33,7 +33,8 @@ class Room extends Component {
 
       static propTypes={
         roomName: PropTypes.string,
-        removeRoomFromUser: PropTypes.func.isRequired
+        removeRoomFromUser: PropTypes.func.isRequired,
+        auth: PropTypes.object.isRequired
       }
       
       // Starts new game
@@ -73,19 +74,19 @@ class Room extends Component {
           let result = this.checkAll(board);
           if (result === this.state.player1) {
             if(this._isMounted){
-              this.setState({ board, gameOver: true, message: 'Player 1 (red) wins!' });
-              if(this.state.playerNum===1)io.emit('gameover',{playerWon: 1, room: this.props.roomName});
+              this.setState({ board, gameOver: true, message: 'Player 1 (red) wins! The room will close in 10 seconds.' });
+              if(this.state.playerNum===2)io.emit('gameover',{username: this.props.auth.user.username, room: this.props.roomName});
             }
           } else if (result === this.state.player2) {
             if(this._isMounted){
-            this.setState({ board, gameOver: true, message: 'Player 2 (yellow) wins!' });
-            if(this.state.playerNum===2)io.emit('gameover',{playerWon: 2, room: this.props.roomName});
+            this.setState({ board, gameOver: true, message: 'Player 2 (yellow) wins! The room will close in 10 seconds.' });
+            if(this.state.playerNum===1)io.emit('gameover',{username: this.props.auth.user.username, room: this.props.roomName});
 
           }
           } else if (result === 'draw') {
             if(this._isMounted&&this.state.playerNum===1){
-              this.setState({ board, gameOver: true, message: 'Draw game.' });
-              io.emit('gameover',{playerWon: 0, room: this.props.roomName});
+              this.setState({ board, gameOver: true, message: 'Draw game. The room will close in 10 seconds.' });
+              io.emit('gameover',{username: 0, room: this.props.roomName});
             }
           } else {
             if(this._isMounted)this.setState({ board, currentPlayer: this.togglePlayer() });
@@ -209,19 +210,15 @@ class Room extends Component {
           }
         });
         io.on('roomClosure',()=>{
-          if(this._isMounted){
-            this.setState({message: (this.state.message + ' The room will close in 30 seconds.')})
-          }
           setTimeout(() => {
             io.emit('terminateRoom',{room: this.props.roomName});
-            console.log(this.props.roomName);
             //this.props.removeRoomFromUser();
             if(this._isMounted)this.setState({redirect: true});
           }, 10000);
         });
         io.on('oppLeft',()=>{
           if(this._isMounted){
-            this.setState({message: ('Opponent left and the room will close in 30 seconds.')})
+            this.setState({message: ('Opponent left and the room will close in 10 seconds.')})
           }
           setTimeout(() => {
             io.emit('terminateRoom',{room: this.props.roomName});
@@ -241,13 +238,15 @@ class Room extends Component {
           <div>
             {this.renderRedirect()}
             {!this.state.gameStarted?<h1 id="text_1">Waiting for the opponent to join</h1> :<div>
-              <table>
-              <thead>
-              </thead>
-              <tbody>
-                {this.state.board.map((row, i) => (<Row key={i} row={row} play={this.play} token={this.state.token} room={this.props.roomName}/>))}
-              </tbody>
-            </table>
+              <div className="wrap">
+                <table>
+                <thead>
+                </thead>
+                <tbody>
+                  {this.state.board.map((row, i) => (<Row key={i} row={row} play={this.play} token={this.state.token} room={this.props.roomName}/>))}
+                </tbody>
+                </table>
+              </div>
             
             <p className="message">{this.state.message?this.state.message:(!this.state.token?('Your turn'):'Opponents turn')}</p></div>
             }
@@ -261,7 +260,8 @@ class Room extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  roomName: state.room.room
+  roomName: state.room.room,
+  auth: state.auth
 });
 
 export default connect(mapStateToProps,{removeRoomFromUser})(Room);

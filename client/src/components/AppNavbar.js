@@ -61,7 +61,7 @@ class AppNavbar extends Component {
                 <Navbar color="dark" dark expand="sm" className="mb-b">
                     <Container>
                         <NavbarBrand href="/">
-                        {isAuthenticated ? <h4>Welcome to my app!</h4> : <h4>Welcome to my app! Please login to continue!</h4>}
+                        {isAuthenticated ? <h4>UwU :3</h4> : <h4>Welcome to my app! Please login to continue!</h4>}
                         </NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.isOpen} navbar>

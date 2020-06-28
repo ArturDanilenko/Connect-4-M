@@ -35,14 +35,17 @@ mongoose2.connect(uri, {
 
 //Use routes
 app.use('/api/items', require('./routes/api/items'));
+app.use('/api/leaderboard', require('./routes/api/leaderboard'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
+const Item = require('./models/User');
+const User = require('./models/User');
 
 io.on('connection', (socket) => {
-
+    
 
     //Lobby init
     socket.on('userJoin',()=>{
@@ -58,7 +61,7 @@ io.on('connection', (socket) => {
         if (err) return console.error(err);
     
         // Send the last messages to the user.
-        socket.emit('init', messages.reverse());
+        socket.emit('init', messages);
       });
     });
 
@@ -123,7 +126,20 @@ io.on('connection', (socket) => {
     });
 
     socket.on('gameover', (msg)=>{
-      const {playerWon, room} = msg;
+      const {username, room} = msg;
+      var wins;
+      if(username){
+        User.findOne({"username":username})
+        .then(user=> {
+          if(user.wins)wins = user.wins + 1;
+          else wins = 1;
+          User.updateOne({username: username}, {wins: wins}, {upsert: true}, function(err, doc) {
+ 
+          });
+        });
+        //console.log(wins);
+        
+      }
       io.to(room).emit('roomClosure');
     });
 

@@ -1,6 +1,8 @@
-export const GET_ITEMS = 'GET_ITEMS';
+export const GET_LEADERS = 'GET_LEADERS';
 export const ADD_ITEM = 'ADD_ITEM';
 export const DELETE_ITEM = 'DELETE_ITEM';
+export const LEADERS_LOADING = 'LEADERS_LOADING';
+export const GET_ITEMS = 'GET_ITEMS';
 export const ITEMS_LOADING = 'ITEMS_LOADING';
 
 export const USER_LOADING = 'USER_LOADING';

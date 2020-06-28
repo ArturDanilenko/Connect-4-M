@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import About from '../components/About';
 import Lobby from '../components/Lobby';
 import Room from '../components/Room';
+import Leaderboard from '../components/Leaderboard';
 import AppNavbar from '../components/AppNavbar';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
@@ -68,6 +69,11 @@ class RouterComponent extends Component {
                                     />
                                 ))
                             }
+
+                        </Route>
+                        <Route path="/leaderboard">
+                          <AppNavbar/>
+                          <Leaderboard/>
 
                         </Route>
                     </Switch>
